@@ -17,12 +17,8 @@ export default class Calendar extends Component {
     const daysInMonth = dayjs().month(currentMonth).daysInMonth()
     const daysInLastMonth = dayjs().month(currentMonth - 1).daysInMonth()
     const firstDayOfWeekInMonth = dayjs().month(currentMonth).date(1).day()
-    const lastDayOfWeekInMonth = dayjs().month(currentMonth).date(daysInMonth).day()
-    const lastDayOfWeekInLastMonth = dayjs().month(currentMonth - 1).date(daysInMonth).day()
-    const firstDayOfWeekInNextMonth = dayjs().month(currentMonth + 1).date(daysInMonth).day()
     const today = dayjs().month(currentMonth).date()
     let notInCurrentMonth = firstDayOfWeekInMonth >= 0
-    let notInNextMonth = lastDayOfWeekInMonth < firstDayOfWeekInNextMonth
     const monthDaysArr = []
     let dayVal = 0
     let nextMonth = currentMonth
@@ -37,7 +33,12 @@ export default class Calendar extends Component {
             notInCurrentMonth = false
             ++dayVal
           }
-          week.push({ dayVal: notInCurrentMonth ? nextDayVal : dayVal, dayOfWeek: j, currentMonth: currentMonth - 1 >= 0 ? currentMonth - 1 : 11, partOfCurrentMonth: !notInCurrentMonth })
+          week.push({
+            dayVal: notInCurrentMonth ? nextDayVal : dayVal,
+            dayOfWeek: j,
+            currentMonth: currentMonth - 1 >= 0 ? currentMonth - 1 : 11,
+            partOfCurrentMonth: !notInCurrentMonth
+          })
           // bottom row of display
         } else if (i === 4) {
           nextMonth = nextMonth === currentMonth ? currentMonth : nextMonth
@@ -45,7 +46,7 @@ export default class Calendar extends Component {
             dayVal = 1
             nextMonth++
           }
-          week.push({ dayVal, dayOfWeek: j, currentMonth: nextMonth, partOfCurrentMonth: nextMonth !== currentMonth })
+          week.push({ dayVal, dayOfWeek: j, currentMonth: nextMonth, partOfCurrentMonth: (nextMonth === currentMonth) })
 
         } else {
           week.push({ dayVal, dayOfWeek: j, currentMonth, partOfCurrentMonth: true })
@@ -61,7 +62,7 @@ export default class Calendar extends Component {
             weekArr =>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 {weekArr.map(
-                  ({ dayVal, currentMonth, partOfCurrentMonth }) => <Date monthDay={dayVal} currentMonth={currentMonth} today={today} partOfCurrentMonth={currentMonth === dayjs().month()} />)
+                  ({ dayVal, currentMonth, partOfCurrentMonth }) => <Date monthDay={dayVal} currentMonth={currentMonth} today={today} partOfCurrentMonth={partOfCurrentMonth} />)
                 }
               </div>
           )
