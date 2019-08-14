@@ -4,6 +4,8 @@ import DateUI from './DateUI'
 import dayjs from 'dayjs'
 import { buildDisplay } from '../util/buildDisplay';
 
+const getDayDate = (dayVal, currentMonth, currentYear) => dayjs().month(currentMonth).year(currentYear).date(dayVal).startOf('day').toDate()
+
 // renders dates given to it
 export default class Calendar extends Component {
   constructor(props) {
@@ -21,10 +23,8 @@ export default class Calendar extends Component {
   closeDateUI = () => {
     this.setState({ isOpen: false, dateToEdit: null })
   }
-  openDateUI = ({ dayVal, currentMonth, currentYear }) => {
-    const { userCalendarObject } = this.state
+  openDateUI = (date) => {
     // FIXME: this is dependent on a user being in the same timezone as when they updated a date
-    const date = dayjs().month(currentMonth).year(currentYear).date(dayVal).startOf('day').toDate()
     this.setState({
       isOpen: true,
       dateToEdit: {
@@ -54,8 +54,18 @@ export default class Calendar extends Component {
             weekArr =>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 {weekArr.map(
-                  ({ dayVal, currentMonth, partOfCurrentMonth }) =>
-                    <Date openDateUI={() => this.openDateUI({ dayVal, currentMonth, currentYear })} monthDay={dayVal} currentMonth={currentMonth} today={today} partOfCurrentMonth={partOfCurrentMonth} />)
+                  ({ dayVal, currentMonth, partOfCurrentMonth }) => {
+
+                    const date = getDayDate(dayVal, currentMonth, currentYear)
+                    return <Date
+                      openDateUI={() => this.openDateUI(date)}
+                      monthDay={dayVal}
+                      currentMonth={currentMonth}
+                      today={today}
+                      partOfCurrentMonth={partOfCurrentMonth}
+                      hasSchedule={this.state.userCalendarObject[date]}
+                    />
+                  })
                 }
               </div>
           )

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import dayjs from 'dayjs'
+import listImage from '../assets/images/list.png'
 
 const getDayColor = (day, today, partOfCurrentMonth, currentMonth) => {
   if (day === today && currentMonth === dayjs().month()) {
@@ -13,7 +14,7 @@ const getDayColor = (day, today, partOfCurrentMonth, currentMonth) => {
 // Date, one for every day of a month
 export default class Date extends Component {
   render() {
-    const { monthDay, today, partOfCurrentMonth, currentMonth } = this.props
+    const { monthDay, today, partOfCurrentMonth, currentMonth, hasSchedule } = this.props
     return (
       <div onClick={this.props.openDateUI} className='date-container' style={{
         backgroundColor: getDayColor(monthDay, today, partOfCurrentMonth, currentMonth),
@@ -24,7 +25,7 @@ export default class Date extends Component {
         maxHeight: 125,
       }}>
         <div>{monthDay}</div>
-
+        {hasSchedule && <div><img src={listImage} /></div>}
       </div>
     )
   }
