@@ -15,7 +15,7 @@ export default class Date extends Component {
   render() {
     const { monthDay, today, partOfCurrentMonth, currentMonth } = this.props
     return (
-      <div className='date-container' style={{
+      <div onClick={this.props.openDateUI} className='date-container' style={{
         backgroundColor: getDayColor(monthDay, today, partOfCurrentMonth, currentMonth),
         border: '1px solid black',
         maxWidth: 125,

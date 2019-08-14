@@ -2,67 +2,60 @@ import React, { Component } from 'react'
 import Date from './Date'
 import DateUI from './DateUI'
 import dayjs from 'dayjs'
-import { tsExpressionWithTypeArguments } from '@babel/types';
+import { buildDisplay } from '../util/buildDisplay';
 
 // renders dates given to it
 export default class Calendar extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      yes: false
+      userCalendarObject: {},
+      currentDate: {},
+      dateToEdit: { date: '', schedule: [] },
+      isOpen: false
     }
   }
-  render() {
-    const { currentMonth } = this.props
-    const daysInMonth = dayjs().month(currentMonth).daysInMonth()
-    const daysInLastMonth = dayjs().month(currentMonth - 1).daysInMonth()
-    const firstDayOfWeekInMonth = dayjs().month(currentMonth).date(1).day()
-    const today = dayjs().month(currentMonth).date()
-    let notInCurrentMonth = firstDayOfWeekInMonth >= 0
-    const monthDaysArr = []
-    let dayVal = 0
-    let nextMonth = currentMonth
-    for (let i = 0; i < 5; ++i) {
-      const week = []
-      for (let j = 0; j < 7; ++j) {
-        // top row of display
-        if (i === 0) {
-          const nextDayVal = daysInLastMonth - firstDayOfWeekInMonth + 1 + j
-          if (nextDayVal > daysInLastMonth && notInCurrentMonth) {
-            dayVal = 0
-            notInCurrentMonth = false
-            ++dayVal
-          }
-          week.push({
-            dayVal: notInCurrentMonth ? nextDayVal : dayVal,
-            dayOfWeek: j,
-            currentMonth: currentMonth - 1 >= 0 ? currentMonth - 1 : 11,
-            partOfCurrentMonth: !notInCurrentMonth
-          })
-          // bottom row of display
-        } else if (i === 4) {
-          nextMonth = nextMonth === currentMonth ? currentMonth : nextMonth
-          if (dayVal > daysInMonth) {
-            dayVal = 1
-            nextMonth++
-          }
-          week.push({ dayVal, dayOfWeek: j, currentMonth: nextMonth, partOfCurrentMonth: (nextMonth === currentMonth) })
-
-        } else {
-          week.push({ dayVal, dayOfWeek: j, currentMonth, partOfCurrentMonth: true })
-        }
-        ++dayVal
+  componentDidMount() {
+    this.setState({ userCalendarObject: this.props.userCalendarObject })
+  }
+  closeDateUI = () => {
+    this.setState({ isOpen: false, dateToEdit: null })
+  }
+  openDateUI = ({ dayVal, currentMonth, currentYear }) => {
+    const { userCalendarObject } = this.state
+    // FIXME: this is dependent on a user being in the same timezone as when they updated a date
+    const date = dayjs().month(currentMonth).year(currentYear).date(dayVal).startOf('day')
+    this.setState({
+      isOpen: true,
+      dateToEdit: {
+        date,
       }
-      monthDaysArr.push(week)
-    }
+    })
+  }
+  updateUserCalendar = (date, schedule) => {
+    this.setState({
+      isOpen: false,
+      userCalendarObject: {
+        ...this.state.userCalendarObject,
+        [date]: schedule
+      }
+    })
+  }
+  render() {
+    const { currentMonth, currentYear } = this.props
+    const { dateToEdit, userCalendarObject } = this.state
+    const today = dayjs().month(currentMonth).date()
+    const monthDaysArr = buildDisplay(currentMonth)
     return (
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <DateUI updateUserCalendar={this.updateUserCalendar} isOpen={this.state.isOpen} dateToEdit={dateToEdit} userCalendarObject={userCalendarObject} closeDateUI={this.closeDateUI} />
         {
           monthDaysArr.map(
             weekArr =>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 {weekArr.map(
-                  ({ dayVal, currentMonth, partOfCurrentMonth }) => <Date monthDay={dayVal} currentMonth={currentMonth} today={today} partOfCurrentMonth={partOfCurrentMonth} />)
+                  ({ dayVal, currentMonth, partOfCurrentMonth }) =>
+                    <Date openDateUI={() => this.openDateUI({ dayVal, currentMonth, currentYear })} monthDay={dayVal} currentMonth={currentMonth} today={today} partOfCurrentMonth={partOfCurrentMonth} />)
                 }
               </div>
           )
