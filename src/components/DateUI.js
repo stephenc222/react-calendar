@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import Popup from './Popup'
 
 const DateUI = (props) => {
-  const { dateToEdit, isOpen, closeDateUI, updateUserCalendar, userCalendarObject } = props
-  const { date } = dateToEdit
-  const [nextSchedule, updateSchedule] = useState(updateUserCalendar[date] && updateUserCalendar[date].schedule || [])
+  const { dateToEdit, isOpen, closeDateUI, updateUserCalendar, userCalendarObject = {} } = props
+  const date = dateToEdit && dateToEdit.date || null
+  const [nextSchedule, updateSchedule] = useState(userCalendarObject[date] && userCalendarObject[date].schedule || [])
   return (
     <Popup showPopup={isOpen}>
       <div>
