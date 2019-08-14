@@ -6,10 +6,10 @@ export default class Control extends Component {
     super(props)
   }
   render() {
-    const { currentMonth } = this.props
-    const formattedCurrentMonth = dayjs().month(currentMonth).format('MMMM YYYY')
+    const { currentMonth, currentYear } = this.props
+    const formattedCurrentMonth = dayjs().year(currentYear).month(currentMonth).format('MMMM YYYY')
     return (
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 50 }}>
         <button onClick={(e) => this.props.onMonthChange(e, currentMonth - 1)}>Prev</button>
         <div style={{ paddingLeft: 50, paddingRight: 50 }}>{formattedCurrentMonth}</div>
         <button onClick={(e) => this.props.onMonthChange(e, currentMonth + 1)}>Next</button>

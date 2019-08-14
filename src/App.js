@@ -11,7 +11,8 @@ class App extends Component {
       // object with the following structure: (not considering timezones for the moment)
       // { day-date: [list of items, in date order]}
       userCalendarObject: {},
-      currentMonth: new Date().getMonth()
+      currentMonth: new Date().getMonth(),
+      currentYear: new Date().getFullYear()
     }
   }
   componentDidMount() {
@@ -19,18 +20,28 @@ class App extends Component {
   }
   onMonthChange = (e, currentMonth) => {
     e.preventDefault()
-    this.setState({ currentMonth: currentMonth < 0 ? 11 : currentMonth })
+    const { currentYear } = this.state
+    this.setState({
+      currentMonth:
+        currentMonth < 0
+          ? 11
+          : (currentMonth > 12 ? 0 : currentMonth),
+      currentYear:
+        currentMonth < 0
+          ? currentYear - 1
+          : (currentMonth > 12 ? currentYear + 1 : currentYear)
+    })
 
   }
   render() {
-    const { userCalendarObject, loading, currentMonth } = this.state
+    const { userCalendarObject, loading, currentMonth, currentYear } = this.state
     if (loading) {
       return 'loading...'
     }
     return (
-      <div style={{ border: '1px solid red' }} className="App">
-        <Control currentMonth={currentMonth} onMonthChange={this.onMonthChange} />
-        <Calendar currentMonth={currentMonth} userCalendarObject={userCalendarObject} />
+      <div className="App">
+        <Control currentMonth={currentMonth} currentYear={currentYear} onMonthChange={this.onMonthChange} />
+        <Calendar currentMonth={currentMonth} currentYear={currentYear} userCalendarObject={userCalendarObject} />
       </div>
     );
   }
