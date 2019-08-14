@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Date from './Date'
 import DateUI from './DateUI'
+import EditDateUI from './EditDateUI'
 import dayjs from 'dayjs'
 import { buildDisplay } from '../util/buildDisplay';
 
@@ -32,6 +33,13 @@ export default class Calendar extends Component {
       }
     })
   }
+  leaveEditMode = () => {
+    this.setState({ showEditDateUI: false })
+
+  }
+  enterEditMode = () => {
+    this.setState({ showEditDateUI: true })
+  }
   updateUserCalendar = (date, schedule) => {
     this.setState({
       isOpen: false,
@@ -48,7 +56,8 @@ export default class Calendar extends Component {
     const monthDaysArr = buildDisplay(currentMonth)
     return (
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-        <DateUI updateUserCalendar={this.updateUserCalendar} isOpen={this.state.isOpen} dateToEdit={dateToEdit} userCalendarObject={userCalendarObject} closeDateUI={this.closeDateUI} />
+        <EditDateUI leaveEditMode={this.leaveEditMode} isOpen={this.state.showEditDateUI} />
+        <DateUI shouldHide={this.state.showEditDateUI ? true : false} enterEditMode={this.enterEditMode} updateUserCalendar={this.updateUserCalendar} isOpen={this.state.isOpen} dateToEdit={dateToEdit} userCalendarObject={userCalendarObject} closeDateUI={this.closeDateUI} />
         {
           monthDaysArr.map(
             weekArr =>

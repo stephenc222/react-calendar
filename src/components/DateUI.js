@@ -4,12 +4,15 @@ import dayjs from 'dayjs'
 import ScheduleList from './ScheduleList';
 
 const DateUI = (props) => {
-  const { dateToEdit, isOpen, closeDateUI, updateUserCalendar, userCalendarObject = null } = props
+  const { shouldHide, dateToEdit, isOpen, closeDateUI, updateUserCalendar, userCalendarObject = null, enterEditMode, zIndexVal } = props
   const date = dateToEdit && dateToEdit.date || null
   const [nextSchedule, updateSchedule] = useState(userCalendarObject && userCalendarObject[date] || [])
   useEffect(() => {
     updateSchedule(userCalendarObject && userCalendarObject[date])
-  }, [date])
+  }, [date, userCalendarObject])
+  if (shouldHide) {
+    return null
+  }
   return (
     <Popup showPopup={isOpen}>
       <div>
@@ -23,15 +26,21 @@ const DateUI = (props) => {
         <div className='date-ui-date-schedule-container'>
           <ScheduleList
             schedule={nextSchedule}
+            addItem={(item) => {
+              updateSchedule(item)
+            }}
+            deleteItem={(item) => {
+              updateSchedule(item)
+            }}
+            enterEditMode={(event, schedule, index) => enterEditMode(event, schedule, index)}
           />
 
         </div>
         <div className='date-ui-form-container'>
           <form onSubmit={(event) => {
             event.preventDefault()
-            updateUserCalendar(date, [{ date, description: 'something planned', hasPassed: dayjs().isAfter(new Date()) }])
+            updateUserCalendar(date, nextSchedule)
           }}>
-            <pre>{JSON.stringify(props, null, 2)}</pre>
             <button type='submit'>Update</button>
           </form>
         </div>
