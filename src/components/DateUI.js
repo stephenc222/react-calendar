@@ -15,7 +15,7 @@ const DateUI = (props) => {
       <div>
         <div style={{ display: 'flex', flexDirection: 'row', flexGrow: 1, padding: 10 }} className='date-ui-header-container'>
           <div style={{ flexBasis: '33.33%' }} />
-          <div style={{ flexBasis: '33.33%' }}>Bob</div>
+          <div style={{ flexBasis: '33.33%' }}>{`${dayjs(date).format('MMM DD YYYY')}`}</div>
           <div style={{ flexBasis: '33.33%', display: 'flex', justifyContent: 'flex-end' }}>
             <button onClick={closeDateUI}>X</button>
           </div>

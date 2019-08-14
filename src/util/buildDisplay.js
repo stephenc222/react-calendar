@@ -20,10 +20,15 @@ export const buildDisplay = (currentMonth) => {
           notInCurrentMonth = false
           ++dayVal
         }
+        // the first row of the display will never include the next month
+        let currentMonthToUpdate = notInCurrentMonth ? currentMonth - 1 : currentMonth
         week.push({
           dayVal: notInCurrentMonth ? nextDayVal : dayVal,
           dayOfWeek: j,
-          currentMonth: currentMonth - 1 >= 0 ? currentMonth - 1 : 11,
+          currentMonth:
+            currentMonthToUpdate - 1 < 0
+              ? 11
+              : currentMonthToUpdate,
           partOfCurrentMonth: !notInCurrentMonth
         })
         // bottom row of display
