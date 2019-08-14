@@ -24,7 +24,7 @@ export default class Calendar extends Component {
   openDateUI = ({ dayVal, currentMonth, currentYear }) => {
     const { userCalendarObject } = this.state
     // FIXME: this is dependent on a user being in the same timezone as when they updated a date
-    const date = dayjs().month(currentMonth).year(currentYear).date(dayVal).startOf('day')
+    const date = dayjs().month(currentMonth).year(currentYear).date(dayVal).startOf('day').toDate()
     this.setState({
       isOpen: true,
       dateToEdit: {
