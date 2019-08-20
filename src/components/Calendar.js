@@ -51,6 +51,9 @@ export default class Calendar extends Component {
         ...this.state.userCalendarObject,
         [date]: schedule
       }
+    }, async () => {
+      // serialize into local storage - wrapped with a promise for a hacky fix for a possible race condition
+      await localStorage.setItem('reactCalendar', JSON.stringify(this.state.userCalendarObject))
     })
   }
   render() {

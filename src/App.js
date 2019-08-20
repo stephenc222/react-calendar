@@ -10,7 +10,7 @@ class App extends Component {
       loading: false,
       // object with the following structure: (not considering timezones for the moment)
       // { day-date: [list of items, in date order]}
-      userCalendarObject: {},
+      userCalendarObject: JSON.parse(localStorage.getItem('reactCalendar')) || {},
       currentMonth: new Date().getMonth(),
       currentYear: new Date().getFullYear()
     }
