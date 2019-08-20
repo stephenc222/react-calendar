@@ -25,6 +25,7 @@ const DateUI = (props) => {
         </div>
         <div className='date-ui-date-schedule-container'>
           <ScheduleList
+            date={date}
             schedule={nextSchedule}
             addItem={(item) => {
               updateSchedule(item)
