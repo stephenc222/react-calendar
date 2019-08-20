@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 window.dayjs = dayjs
 
 const ScheduleListItem = (props) => {
-  const { date, description, hasPassed, deleteScheduleItem, deleteItem, index, editItem, schedule, enterEditMode } = props
+  const { date, description, hasPassed, deleteScheduleItem, deleteItem, index, editItem, schedule, enterEditMode, isNotTemp } = props
   const time = dayjs(date).format('h:mm a')
   return (
     <div style={{ display: 'flex' }}>
@@ -11,7 +11,8 @@ const ScheduleListItem = (props) => {
       <div>{description}</div>
       <div></div>
       <div>
-        <button onClick={(event) => enterEditMode(event, schedule, index)}>E</button>
+        {/* If this a preserved item, then we can edit it */}
+        {isNotTemp && <button onClick={(event) => enterEditMode(index)}>E</button>}
         <button onClick={(event) => deleteScheduleItem(event, deleteItem, schedule, index)}>X</button>
       </div>
     </div>
@@ -34,7 +35,7 @@ const addScheduleItem = (event, addItem, schedule, item) => {
 // if hasPassed, it will be "greyed" but still removable - idk
 // { time: 9am, description: '', hasPassed: false }
 const ScheduleList = (props) => {
-  const { schedule = [], addItem, deleteItem, enterEditMode, date } = props
+  const { schedule = [], addItem, deleteItem, enterEditMode, date, userCalendarObject } = props
   const [nextItemVal, onNextItemValChange] = useState('')
   const [nextItemDate, onNextItemDateChange] = useState(new Date())
   const onSubmit = (event) => {
@@ -63,7 +64,18 @@ const ScheduleList = (props) => {
       {schedule
         && schedule.length
         && schedule.map(
-          (itemProps, index) => <ScheduleListItem hasPassed={dayjs(itemProps.date).isBefore(new Date())} schedule={schedule} index={index} deleteItem={deleteItem} deleteScheduleItem={deleteScheduleItem} enterEditMode={enterEditMode} key={`SLI_${index}`} {...itemProps} />)
+          (itemProps, index) =>
+            <ScheduleListItem
+              hasPassed={dayjs(itemProps.date).isBefore(new Date())}
+              schedule={schedule}
+              index={index}
+              isNotTemp={userCalendarObject && userCalendarObject[date] && userCalendarObject[date][index]}
+              deleteItem={deleteItem}
+              deleteScheduleItem={deleteScheduleItem}
+              enterEditMode={() => enterEditMode(index)}
+              key={`SLI_${index}`}
+              {...itemProps}
+            />)
         || ''
       }
 

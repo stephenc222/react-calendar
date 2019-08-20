@@ -26,6 +26,7 @@ const DateUI = (props) => {
         <div className='date-ui-date-schedule-container'>
           <ScheduleList
             date={date}
+            userCalendarObject={userCalendarObject}
             schedule={nextSchedule}
             addItem={(item) => {
               updateSchedule(item)
@@ -33,7 +34,7 @@ const DateUI = (props) => {
             deleteItem={(item) => {
               updateSchedule(item)
             }}
-            enterEditMode={(event, schedule, index) => enterEditMode(event, schedule, index)}
+            enterEditMode={(index) => enterEditMode(userCalendarObject, date, index)}
           />
 
         </div>

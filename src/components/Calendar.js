@@ -37,8 +37,12 @@ export default class Calendar extends Component {
     this.setState({ showEditDateUI: false })
 
   }
-  enterEditMode = () => {
-    this.setState({ showEditDateUI: true })
+  enterEditMode = (_, date, index) => {
+    this.setState({ showEditDateUI: true, currentIndex: index, currentDate: date })
+  }
+
+  editCalendarObject = (nextUserCalendarObject) => {
+    this.setState({ userCalendarObject: nextUserCalendarObject })
   }
   updateUserCalendar = (date, schedule) => {
     this.setState({
@@ -51,12 +55,13 @@ export default class Calendar extends Component {
   }
   render() {
     const { currentMonth, currentYear } = this.props
-    const { dateToEdit, userCalendarObject } = this.state
+    const { dateToEdit, userCalendarObject, currentDate, currentIndex } = this.state
     const today = dayjs().month(currentMonth).date()
     const monthDaysArr = buildDisplay(currentMonth)
+    const date = dateToEdit && dateToEdit.date || null
     return (
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-        <EditDateUI leaveEditMode={this.leaveEditMode} isOpen={this.state.showEditDateUI} />
+        <EditDateUI date={date} currentDate={currentDate} editCalendarObject={this.editCalendarObject} currentIndex={currentIndex} userCalendarObject={userCalendarObject} leaveEditMode={this.leaveEditMode} isOpen={this.state.showEditDateUI} />
         <DateUI shouldHide={this.state.showEditDateUI ? true : false} enterEditMode={this.enterEditMode} updateUserCalendar={this.updateUserCalendar} isOpen={this.state.isOpen} dateToEdit={dateToEdit} userCalendarObject={userCalendarObject} closeDateUI={this.closeDateUI} />
         {
           monthDaysArr.map(
